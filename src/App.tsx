@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, type FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const signUpSchema = z
   .object({
-    nameFull: z.string(),
+    nameFull: z.string().includes(" "),
     birthday: z.date(),
     email: z.string().email(),
     password: z.string().min(10, "Password must be at least 10 characters"),
@@ -38,8 +38,25 @@ export function RegisterForm() {
       className="flex h-screen justify-center items-center"
     >
       <div className="flex flex-col gap-y-8 w-80 h-fit p-8 bg-zinc-200 rounded-2xl shadow-lg">
-        <h1 className="text-zinc-600 text-xl font-bold">Sign up to continue</h1>
+        <h1 className="text-zinc-600 text-2xl font-bold">
+          Sign up to continue
+        </h1>
         <div className="flex flex-col gap-y-3">
+          <input
+            {...register("nameFull")}
+            type="input"
+            placeholder="Full Name"
+            className="px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-zinc-400"
+          />
+          {errors.nameFull && (
+            <p className="text-rose-600 text-xs">{`${errors.nameFull.message}`}</p>
+          )}
+          <input
+            {...register("birthday")}
+            type="date"
+            placeholder="Birthday"
+            className="px-4 py-2 rounded-md focus:outline-none text-zinc-600 focus:ring focus:ring-zinc-400"
+          />
           <input
             {...register("email")}
             type="email"
