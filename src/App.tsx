@@ -1,27 +1,29 @@
-// Improting ZOD
-//install with: npm install zod,
+// Importing ZOD for schema validation
+// Install with: npm install zod
 import { z } from "zod";
-//
-// Importing React Hook Form
+
+// Importing React Hook Form for form handling
 import { useForm } from "react-hook-form";
-//
-//install with: npm install @hookform/resolvers
+
+// Integrating Zod with React Hook Form
+// Install with: npm install @hookform/resolvers
 import { zodResolver } from "@hookform/resolvers/zod";
 
+// Defining a schema for sign-up form validation using Zod
 const signUpSchema = z
   .object({
-    // Validates if input is string, conditions: between 3-25 charakters log, disabeled special characters
+    // Validates if input is a string, with conditions: 3-25 characters long, only letters, numbers, and underscores
     userName: z
       .string()
       .min(3, "Username must be at least 3 characters long")
       .max(25, "Username must not be greater than 25 characters")
       .regex(
         /^[a-zA-Z0-9_]+$/,
-        "Only letters, numbers and underscore (_) allowed"
+        "Only letters, numbers, and underscore (_) allowed"
       ),
-    // E-Mail validation based on HTML5 email input pattern (covers a wide range of valid email addresses)
+    // Email validation based on HTML5 email input pattern (covers a wide range of valid email addresses)
     email: z.string().email(),
-    //
+    // Validates if full name is at least 3 characters long and contains a space (first and last name required)
     fullName: z
       .string()
       .min(3, "Name must be at least 3 characters long")
@@ -32,29 +34,29 @@ const signUpSchema = z
         },
         { message: "First and last name needed" }
       ),
-    // checking if age min 18
-    age: z.number().refine(
+    // Validates if age is at least 18
+    age: z.string().refine(
       (age) => {
         return Number(age) >= 18;
       },
       { message: "You must be 18 years or older" }
     ),
-    // Minimum length condition + custom error message
+    // Validates if password is at least 10 characters long
     password: z.string().min(10, "Password must be at least 10 characters"),
+    // Placeholder for confirm password, validation will be handled in a custom refinement
     confirmPassword: z.string(),
   })
-  // Define custom validation check (Password match)
+  // Define a custom validation check to ensure password and confirm password match
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Try again. Passwords must match",
-    // Path of error
+    message: "Passwords must match",
     path: ["confirmPassword"],
   });
-//
 
-//extract the inferret type - later stored in types.ts
+// Extracting the inferred type from the Zod schema for use in form typing
 type SignUpSchema = z.infer<typeof signUpSchema>;
 
 export function RegisterForm() {
+  // Setting up React Hook Form with Zod resolver for validation
   const {
     register,
     handleSubmit,
@@ -64,8 +66,12 @@ export function RegisterForm() {
     resolver: zodResolver(signUpSchema),
   });
 
+  // Handling form submission
   const onSubmit = async (data: SignUpSchema) => {
+    // Simulating a server request with a delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Optional: handle successful form submission (e.g., reset form, display success message)
+    reset();
   };
 
   return (
@@ -78,6 +84,7 @@ export function RegisterForm() {
           Sign up to continue
         </h1>
         <div className="flex flex-col gap-y-3">
+          {/* User Name Input Field */}
           <input
             {...register("userName")}
             type="input"
@@ -87,6 +94,7 @@ export function RegisterForm() {
           {errors.userName && (
             <p className="text-rose-600 text-xs">{`${errors.userName.message}`}</p>
           )}
+          {/* Email Input Field */}
           <input
             {...register("email")}
             type="email"
@@ -96,6 +104,7 @@ export function RegisterForm() {
           {errors.email && (
             <p className="text-rose-600 text-xs">{`${errors.email.message}`}</p>
           )}
+          {/* Full Name Input Field */}
           <input
             {...register("fullName")}
             type="input"
@@ -105,6 +114,7 @@ export function RegisterForm() {
           {errors.fullName && (
             <p className="text-rose-600 text-xs">{`${errors.fullName.message}`}</p>
           )}
+          {/* Age Input Field */}
           <input
             {...register("age")}
             type="input"
@@ -114,6 +124,7 @@ export function RegisterForm() {
           {errors.age && (
             <p className="text-rose-600 text-xs">{`${errors.age.message}`}</p>
           )}
+          {/* Password Input Field */}
           <input
             {...register("password")}
             type="password"
@@ -123,6 +134,7 @@ export function RegisterForm() {
           {errors.password && (
             <p className="text-rose-600 text-xs">{`${errors.password.message}`}</p>
           )}
+          {/* Confirm Password Input Field */}
           <input
             {...register("confirmPassword")}
             type="password"
