@@ -67,7 +67,7 @@ export function RegisterForm() {
   });
 
   // Handling form submission
-  const onSubmit = async (data: SignUpSchema) => {
+  const onSubmit = async (_: SignUpSchema) => {
     // Simulating a server request with a delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
     // Optional: handle successful form submission (e.g., reset form, display success message)
